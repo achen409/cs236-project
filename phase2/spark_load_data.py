@@ -3,9 +3,16 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 
 try:
     # spark session init
-    spark: SparkSession = SparkSession.builder.config(
-        "spark.jars.packages", "org.postgresql:postgresql:42.7.8"
-    ).config("spark.shuffle.push.enabled", "false").getOrCreate()
+    spark = (
+        SparkSession.builder
+        .appName("LoadDataToPostgres")
+        .master("local[*]")
+        .config("spark.driver.bindAddress", "127.0.0.1")
+        .config("spark.driver.host", "127.0.0.1")
+        .config("spark.shuffle.push.enabled", "false")
+        .config("spark.jars.packages", "org.postgresql:postgresql:42.7.8")
+        .getOrCreate()
+    )
 
     # schemas
     customer_reservations_schema = StructType([
@@ -96,4 +103,5 @@ try:
     )
 
 finally:
-    spark.stop()
+    if spark is not None:
+        spark.stop()
