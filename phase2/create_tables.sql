@@ -48,3 +48,19 @@ CREATE TABLE all_bookings (
     email TEXT,
     booking_id TEXT
 );
+
+-- loading
+COPY customer_reservations
+FROM '/customer_reservations.csv'
+DELIMITER ','
+CSV HEADER;
+
+COPY hotel_booking
+FROM '/hotel_booking_cleaned.csv'
+DELIMITER ','
+CSV HEADER;
+
+COPY all_bookings
+FROM '/all_bookings.csv'
+DELIMITER ','
+CSV HEADER;
