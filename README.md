@@ -14,6 +14,13 @@ CS236 Project
 docker run -d --name bookings_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=bookings -p 5432:5432 postgres
 ```
 
+## Initialize data tables
+
+```shell
+docker cp .\phase2\create_tables.sql bookings_db:/create_tables.sql 
+docker exec -it bookings_db psql -U postgres -d bookings -f /create_tables.sql
+```
+
 ## Run the pyspark script
 
 ```shell
@@ -29,10 +36,3 @@ docker run -p 8080:8080 adminer
 Adminer will be running on `localhost:8080`; navigate to that on a browser.
 
 Note: running adminer with Docker will not have direct access to localhost - use `host.docker.internal` as the server instead.
-
-## Initialize data tables
-```shell
-docker exec -it bookings_db psql -U postgres -d bookings -f /create_tables.sql
-```
-
-Runs create_tables.sql
