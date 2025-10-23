@@ -29,3 +29,10 @@ docker run -p 8080:8080 adminer
 Adminer will be running on `localhost:8080`; navigate to that on a browser.
 
 Note: running adminer with Docker will not have direct access to localhost - use `host.docker.internal` as the server instead.
+
+## Initialize data tables
+```shell
+docker exec -it bookings_db psql -U postgres -d bookings -f /create_tables.sql
+```
+
+Runs create_tables.sql
