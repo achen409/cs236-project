@@ -12,7 +12,7 @@ st.title("Bookings Database Viewer")
 table_map = {
     "Customer Reservations": "customer_reservations",
     "Hotel Booking": "hotel_booking",
-    "Unified Dataset": "all_bookings"
+    "All Bookings": "all_bookings"
 }
 table_label = st.sidebar.selectbox("Select dataset", list(table_map.keys()))
 table_name = table_map[table_label]
@@ -20,7 +20,7 @@ table_name = table_map[table_label]
 # load data function
 @st.cache_data
 def load_data(table):
-    query = text(f"SELECT * FROM {table} LIMIT 10000;")  # adjust limit if needed
+    query = text(f"SELECT * FROM {table};")
     return pd.read_sql(query, engine)
 
 
