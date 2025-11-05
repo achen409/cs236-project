@@ -34,29 +34,64 @@ st.dataframe(df.head(5))
 
 
 
-# ======Filters======
+# ======Filter Functions======
 # filter ui on left sidebar
 st.sidebar.header("Filter options")
 
-# numeric filters
-if "avg_price_per_room" in df.columns:
-    min_price, max_price = float(df["avg_price_per_room"].min()), float(df["avg_price_per_room"].max())
-    price_range = st.sidebar.slider(
-        "Average Price Per Room", min_price, max_price, (min_price, max_price)
+# numeric slider filters (for float)
+def make_slider_float(col_name, display_name, df):
+    if col_name not in df.columns:
+        return df
+    
+    min_val, max_val = float(df[col_name].min()), float(df[col_name].max())
+    val_range = st.sidebar.slider(
+        display_name, min_val, max_val, (min_val, max_val)
     )
-    df = df[(df["avg_price_per_room"] >= price_range[0]) & (df["avg_price_per_room"] <= price_range[1])]
+    df = df[(df[col_name] >= val_range[0]) & (df[col_name] <= val_range[1])]
+    return df
+
+# for int
+def make_slider(col_name, display_name, df):
+    if col_name not in df.columns:
+        return df
+    
+    min_val, max_val = int(df[col_name].min()), int(df[col_name].max())
+    val_range = st.sidebar.slider(
+        display_name, min_val, max_val, (min_val, max_val)
+    )
+    df = df[(df[col_name] >= val_range[0]) & (df[col_name] <= val_range[1])]
+    return df
+
+
+# categorical filters
+def make_categorical_selector(col_name, display_name, df):
+    if col_name not in df.columns:
+        return df
+    
+    statuses = sorted(df[col_name].unique().tolist())
+    selected_statuses = st.sidebar.multiselect(display_name, statuses, default=statuses)
+    df = df[df[col_name].isin(selected_statuses)]
+
+    return df
+
+
+# ======Individual Filters======
+# stay in weekend nights
+df = make_slider("stays_in_weekend_nights", "Stay in Weekend Nights", df)
+# stay in week nights
+df = make_slider("stays_in_week_nights", "Stay in Week Nights", df)
+# lead time
+df = make_slider("lead_time", "Lead Time", df)
+# avg price per room
+df = make_slider_float("avg_price_per_room", "Average Price per Room", df)
+
+# TODO: 3 Date vars (year, month, day)
 
 # booking status filter
-if "booking_status" in df.columns:
-    statuses = sorted(df["booking_status"].unique().tolist())
-    selected_statuses = st.sidebar.multiselect("Booking Status", statuses, default=statuses)
-    df = df[df["booking_status"].isin(selected_statuses)]
+df = make_categorical_selector("booking_status", "Booking Status", df)
 
 # market segment type filter
-if "market_segment_type" in df.columns:
-    segments = sorted(df["market_segment_type"].unique().tolist())
-    selected_segments = st.sidebar.multiselect("Market Segment Type", segments, default=segments)
-    df = df[df["market_segment_type"].isin(selected_segments)]
+df = make_categorical_selector("market_segment_type", "Market Segment Type", df)
 
 # print filtered data
 st.write(f"### Filtered Results ({len(df)} rows)")
