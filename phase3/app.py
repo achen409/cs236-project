@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine, text
 
+# connects to frontend
 engine = create_engine(
     "postgresql+psycopg2://postgres:password@localhost:5432/bookings"
 )
@@ -10,7 +11,7 @@ engine = create_engine(
 # title
 st.title("Bookings Database Viewer")
 
-# list tables
+# connect tables to frontend
 table_map = {
     "Customer Reservations": "customer_reservations",
     "Hotel Booking": "hotel_booking",
@@ -99,7 +100,7 @@ df_filtered = make_slider("arrival_year", "Year", df_filtered, df)
 # month of arrival
 df_filtered = make_slider("arrival_month", "Month", df_filtered, df)
 # day of arrival
-df_filtered = make_slider("arrival_day", "Date", df_filtered, df)
+df_filtered = make_slider("arrival_day", "Day", df_filtered, df)
 
 # booking status filter
 df_filtered = make_categorical_selector(
